@@ -1,7 +1,8 @@
 const mongoose = require("mongoose"); // import the mongoose library to interact with MongoDB
 const validator = require("validator"); // import the validator library to validate values like URLs
 
-const userSchema = new mongoose.Schema({ // define a user schema
+const userSchema = new mongoose.Schema({
+  // define a user schema
   name: {
     type: String,
     required: true,
@@ -20,4 +21,4 @@ const userSchema = new mongoose.Schema({ // define a user schema
   },
 });
 
-module.export = mongoose.model("user", userSchema);
+module.exports = mongoose.model("user", userSchema);
