@@ -18,14 +18,14 @@ const createItem = (req, res) => {
     weather,
     imageUrl,
     likes: [],
-    // owner: req.user._id,
+    owner: req.user._id,
     createdAt: new Date(),
   })
     .then((item) => res.status(201).send(item))
     .catch((err) => {
       console.error(err);
       if (err.name === "ValidationError") {
-        return res.status(400).send({ message: err.message });
+        return res.status(200).send({ message: err.message });
       }
       return res.status(500).send({ message: err.message });
     });
