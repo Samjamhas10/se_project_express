@@ -4,7 +4,6 @@ const indexRouter = require("./routes/index");
 
 const app = express(); // create an instance of an Express application
 const { PORT = 3001 } = process.env; // get port number or use 3001 as default
-app.use("/", indexRouter);
 
 mongoose
   .connect("mongodb://127.0.0.1:27017/wtwr_db")
@@ -12,6 +11,9 @@ mongoose
     console.log("Connected to DB");
   })
   .catch(console.error);
+
+app.use(express.json());
+app.use("/", indexRouter);
 
 app.listen(PORT, () => {
   // start the server
