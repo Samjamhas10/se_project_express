@@ -31,7 +31,7 @@ const createItem = (req, res) => {
     });
 };
 
-const deleteItems = (req, res) => {
+const deleteItem = (req, res) => {
   const itemId = req.params.itemId; // identifying which item to delete
   Item.findByIdAndDelete(req.params.itemId)
     .then((item) => {
@@ -47,4 +47,20 @@ const deleteItems = (req, res) => {
     });
 };
 
-module.exports = { getItems, createItem, deleteItems };
+const updateItem = (req, res) => {
+  const { itemId } = req.params;
+  const { imageUrl } = req.body;
+  console.log(itemId, imageUrl);
+  Item.findByIdAndUpdate(
+    itemId,
+    { imageUrl },
+    { new: true, runValidators: true }
+  )
+    .orFail()
+    .then((item) => res.status(200).send({ data: item }))
+    .catch((err) => {
+      res.status(500).send({ message: err.message });
+    });
+};
+
+module.exports = { getItems, createItem, deleteItem, updateItem };

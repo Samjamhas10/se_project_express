@@ -1,6 +1,7 @@
 const express = require("express"); // import Express library used to build our web server
 const mongoose = require("mongoose");
 const indexRouter = require("./routes/index");
+const clothingItemsRouter = require("./routes/clothingItems");
 
 const app = express(); // create an instance of an Express application
 const { PORT = 3001 } = process.env; // get port number or use 3001 as default
@@ -20,6 +21,7 @@ app.use((req, res, next) => {
   next();
 });
 app.use("/", indexRouter);
+app.use("/items", clothingItemsRouter);
 
 app.listen(PORT, () => {
   // start the server
