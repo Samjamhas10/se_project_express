@@ -24,7 +24,7 @@ app.use((req, res, next) => {
 app.use("/", indexRouter); // application routes
 
 app.use((req, res) => {
-  res.status(notFoundStatusCode).send({ message: "Page not found" }); // 404 catch-all
+  res.status(notFoundStatusCode).send({ message: "Requested resource not found" }); // 404 catch-all
 });
 
 app.listen(PORT, () => {
