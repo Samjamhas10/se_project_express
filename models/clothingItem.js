@@ -31,8 +31,7 @@ const clothingItemSchema = new mongoose.Schema({
   },
 
   likes: {
-    type: [mongoose.Schema.Types.ObjectId],
-    ref: "User", // reference to the user modal
+    type: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     default: [], // default is an empty array
   },
   createdAt: {

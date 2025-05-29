@@ -47,20 +47,37 @@ const deleteItem = (req, res) => {
     });
 };
 
-const updateItem = (req, res) => {
+const updateItem = (req, res, method) => {
   const { itemId } = req.params;
-  const { imageUrl } = req.body;
-  console.log(itemId, imageUrl);
+
+  console.log(itemId);
   Item.findByIdAndUpdate(
     itemId,
-    { imageUrl },
-    { new: true, runValidators: true }
+
+    { [method]: { likes: req.user._id } },
+    { new: true }
   )
     .orFail()
-    .then((item) => res.status(200).send({ data: item }))
+    .then((item) => res.status(200).send(item))
     .catch((err) => {
-      res.status(500).send({ message: err.message });
+      if (err.name === "DocumentNotFoundError") {
+        return res.status(404).send({ message: "Item not found" });
+      }
+      return res.status(500).send({ message: err.message });
     });
 };
 
-module.exports = { getItems, createItem, deleteItem, updateItem };
+// PUT /items/:id/likes
+const likeClothingItem = (req, res) => updateItem(req, res, "$addToSet");
+
+// DELETE /items/:id/likes
+const dislikeClothingItem = (req, res) => updateItem(req, res, "$pull");
+
+module.exports = {
+  getItems,
+  createItem,
+  deleteItem,
+  updateItem,
+  likeClothingItem,
+  dislikeClothingItem,
+};
