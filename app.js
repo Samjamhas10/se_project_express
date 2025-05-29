@@ -1,7 +1,7 @@
 const express = require("express"); // import Express library used to build our web server
 const mongoose = require("mongoose");
 const indexRouter = require("./routes/index");
-const clothingItemsRouter = require("./routes/clothingItems");
+const { notFoundStatusCode } = require("../utils/errors");
 
 const app = express(); // create an instance of an Express application
 const { PORT = 3001 } = process.env; // get port number or use 3001 as default
@@ -14,14 +14,17 @@ mongoose
   })
   .catch(console.error);
 
-app.use(express.json());
+app.use(express.json()); // parse JSON request bodies
 app.use((req, res, next) => {
   req.user = {
-    _id: "6834ff5b66f67b0713936a33",
+    _id: "6834ff5b66f67b0713936a33", // sets up the user object for all requests
   };
   next();
 });
-app.use("/", indexRouter);
+app.use("/", indexRouter); // application routes
+app.use((req, res) => {
+  res.status(notFoundStatusCode).send({ message: "Page not found" }); // 404 catch-all
+});
 
 app.listen(PORT, () => {
   // start the server
