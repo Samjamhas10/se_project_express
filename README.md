@@ -1,6 +1,6 @@
 # WTWR (What to Wear?): Back End Project 12
 
-The back-end project is focused on creating a server for the WTWR application. This application is a weather-based clothing recommendation app. The main focus is to build a RESTful API, where users can get, add, delete, update clothing items. You’ll gain a deeper understanding of how to work with databases, set up security and testing, and deploy web applications on a remote machine.
+The back-end project is focused on creating a server for the WTWR application. This application is a weather-based clothing recommendation app. The main focus is to build a RESTful API, where users can get, add, delete, update clothing items.
 
 ## Project Description
 
