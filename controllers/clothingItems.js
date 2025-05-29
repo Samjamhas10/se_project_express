@@ -1,13 +1,22 @@
 const Item = require("../models/clothingItem");
+const {
+  badRequestStatusCode,
+  internalServerStatusCode,
+  okStatusCode,
+  createdStatusCode,
+  notFoundStatusCode,
+} = require("../utils/errors");
 
 const getItems = (req, res) => {
   Item.find({})
     .then((items) => {
-      res.status(200).send(items);
+      res.status(okStatusCode).send(items);
     })
     .catch((err) => {
       console.error(err);
-      return res.status(500).send({ message: err.message });
+      return res
+        .status(internalServerStatusCode)
+        .send({ message: err.message });
     });
 };
 
@@ -19,38 +28,40 @@ const createItem = (req, res) => {
     imageUrl,
     likes: [],
     owner: req.user._id,
-    createdAt: new Date(),
   })
-    .then((item) => res.status(201).send(item))
+    .then((item) => res.status(createdStatusCode).send(item))
     .catch((err) => {
       console.error(err);
       if (err.name === "ValidationError") {
-        return res.status(400).send({ message: err.message });
+        return res.status(badRequestStatusCode).send({ message: err.message });
       }
-      return res.status(500).send({ message: err.message });
+      return res
+        .status(internalServerStatusCode)
+        .send({ message: err.message });
     });
 };
 
 const deleteItem = (req, res) => {
-  const itemId = req.params.itemId; // identifying which item to delete
-  Item.findByIdAndDelete(req.params.itemId)
+  const { itemId } = req.params; // identifying which item to delete
+  Item.findByIdAndDelete(itemId)
     .then((item) => {
       if (!item) {
-        return res.status(404).send({ message: "Item not found" });
+        return res
+          .status(notFoundStatusCode)
+          .send({ message: "Item not found" });
       }
-      return res.status(200).send(item);
+      return res.status(okStatusCode).send(item);
     })
     .catch((err) => {
       // if an error occurs
       console.error(err);
-      return res.status(400).send({ message: err.message });
+      return res.status(badRequestStatusCode).send({ message: err.message });
     });
 };
 
 const updateItem = (req, res, method) => {
   const { itemId } = req.params;
 
-  console.log(itemId);
   Item.findByIdAndUpdate(
     itemId,
 
@@ -58,12 +69,21 @@ const updateItem = (req, res, method) => {
     { new: true }
   )
     .orFail()
-    .then((item) => res.status(200).send(item))
+    .then((item) => res.status(okStatusCode).send(item))
     .catch((err) => {
       if (err.name === "DocumentNotFoundError") {
-        return res.status(404).send({ message: "Item not found" });
+        return res
+          .status(notFoundStatusCode)
+          .send({ message: "Item not found" });
       }
-      return res.status(500).send({ message: err.message });
+      if (err.name === "CastError") {
+        return res
+          .status(badRequestStatusCode)
+          .send({ message: "Incorrect Id" });
+      }
+      return res
+        .status(internalServerStatusCode)
+        .send({ message: err.message });
     });
 };
 
