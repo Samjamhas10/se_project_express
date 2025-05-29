@@ -16,7 +16,7 @@ const getItems = (req, res) => {
       console.error(err);
       return res
         .status(internalServerStatusCode)
-        .send({ message: err.message });
+        .send({ message: "An error has occurred on the server" });
     });
 };
 
@@ -33,11 +33,13 @@ const createItem = (req, res) => {
     .catch((err) => {
       console.error(err);
       if (err.name === "ValidationError") {
-        return res.status(badRequestStatusCode).send({ message: err.message });
+        return res
+          .status(badRequestStatusCode)
+          .send({ message: "Invalid data" });
       }
       return res
         .status(internalServerStatusCode)
-        .send({ message: err.message });
+        .send({ message: "An error has occurred on the server" });
     });
 };
 
@@ -48,14 +50,21 @@ const deleteItem = (req, res) => {
       if (!item) {
         return res
           .status(notFoundStatusCode)
-          .send({ message: "Item not found" });
+          .send({ message: "Requested resource not found" });
       }
       return res.status(okStatusCode).send(item);
     })
     .catch((err) => {
       // if an error occurs
       console.error(err);
-      return res.status(badRequestStatusCode).send({ message: err.message });
+      if (err.name === "CastError") {
+        return res
+          .status(badRequestStatusCode)
+          .send({ message: "Invalid data" });
+      }
+      return res
+        .status(internalServerStatusCode)
+        .send({ message: "An error has occurred on the server" });
     });
 };
 
@@ -74,16 +83,16 @@ const updateItem = (req, res, method) => {
       if (err.name === "DocumentNotFoundError") {
         return res
           .status(notFoundStatusCode)
-          .send({ message: "Item not found" });
+          .send({ message: "Requested resource not found" });
       }
       if (err.name === "CastError") {
         return res
           .status(badRequestStatusCode)
-          .send({ message: "Incorrect Id" });
+          .send({ message: "Invalid data" });
       }
       return res
         .status(internalServerStatusCode)
-        .send({ message: err.message });
+        .send({ message: "An error has occurred on the server" });
     });
 };
 
