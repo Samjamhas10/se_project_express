@@ -16,12 +16,7 @@ mongoose
   .catch(console.error);
 
 app.use(express.json()); // parse JSON request bodies
-app.use((req, res, next) => {
-  req.user = {
-    _id: "6834ff5b66f67b0713936a33", // sets up the user object for all requests
-  };
-  next();
-});
+
 app.use("/", indexRouter); // application routes
 app.post("/signin", login);
 app.post("/signup", createUser);
