@@ -2,6 +2,7 @@ const express = require("express"); // import Express library used to build our 
 const mongoose = require("mongoose");
 const indexRouter = require("./routes/index");
 const { notFoundStatusCode } = require("./utils/errors");
+// const { login, createUser } = require("../controllers/users");
 
 const app = express(); // create an instance of an Express application
 const { PORT = 3001 } = process.env; // get port number or use 3001 as default
@@ -22,9 +23,13 @@ app.use((req, res, next) => {
   next();
 });
 app.use("/", indexRouter); // application routes
+app.post("/signin", login);
+app.post("/signup", createUser);
 
 app.use((req, res) => {
-  res.status(notFoundStatusCode).send({ message: "Requested resource not found" }); // 404 catch-all
+  res
+    .status(notFoundStatusCode)
+    .send({ message: "Requested resource not found" }); // 404 catch-all
 });
 
 app.listen(PORT, () => {
