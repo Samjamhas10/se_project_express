@@ -58,9 +58,9 @@ const createUser = (req, res) => {
     });
 };
 
-const getUser = (req, res) => {
-  const { userId } = req.params;
-  User.findById(userId)
+const getCurrentUser = (req, res) => {
+  const { user_id } = req.user;
+  User.findById(user_id)
     .orFail()
     .then((user) => res.status(okStatusCode).send(user)) // returning user
     .catch((err) => {
@@ -81,31 +81,6 @@ const getUser = (req, res) => {
     });
 };
 
-// module.exports.login = (req, res) => {
-//   const { email, password } = req.body;
-//   // attempt to find one user
-//   User.findOne({ email })
-//     .then((user) => {
-//       if (!user) {
-//         // if no user is foind, reject the Promise with an error
-//         return Promise.reject(new Error("Incorrect email or password"));
-//       }
-//       // if user is found, compare the provided password
-//       return bcrypt.compare(password, user.password);
-//     })
-//     .then((matched) => {
-//       if (!matched) {
-//         return Promise.reject(new Error("Incorrect email or password"));
-//       }
-//       // if everything is valid, send a success message
-//       res.send({ message: "Everything is good" });
-//     })
-//     .catch((err) => {
-//       console.error(err);
-//       res.status(unauthorizedStatusCode).send({ message: "Unauthorized" });
-//     });
-// };
-
 module.exports.login = (req, res) => {
   const { email, password } = req.body;
   return User.findUserByCredentials(email, password)
@@ -120,4 +95,4 @@ module.exports.login = (req, res) => {
     });
 };
 
-module.exports = { getUsers, createUser, getUser };
+module.exports = { getUsers, getCurrentUser, createUser };
