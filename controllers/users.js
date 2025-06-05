@@ -13,6 +13,7 @@ const {
 } = require("../utils/errors");
 
 const { JWT_SECRET } = require("../utils/config");
+const user = require("../models/user");
 
 const getUsers = (req, res) => {
   User.find({})
@@ -94,8 +95,30 @@ const login = (req, res) => {
       res.send({ token });
     })
     .catch((err) => {
-      res.status(unauthorizedStatusCode).send({ message: err.message });
+      res.status(badRequestStatusCode).send({ message: "Invalid data" });
     });
 };
 
-module.exports = { getUsers, getCurrentUser, createUser, login };
+// allows users to update their own profile information
+const updateProfile = (req, res) => {
+  const userId = req.user._id;
+  const { name, avatar } = req.body;
+  return User.findByIdAndUpdate(
+    userId,
+    { name, avatar },
+    { new: true, runValidators: true }
+  )
+    .then((user) => {
+      if (!user) {
+        return res
+          .status(notFoundStatusCode)
+          .send({ message: "Requested resource not found" });
+      }
+      res.send(user);
+    })
+    .catch((err) => {
+      return res.status(badRequestStatusCode).send({ message: "Invalid data" });
+    });
+};
+
+module.exports = { getUsers, getCurrentUser, createUser, login, updateProfile };

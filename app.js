@@ -18,12 +18,13 @@ mongoose
 
 app.use(express.json()); // parse JSON request bodies
 
-app.use("/", indexRouter); // application routes
 app.post("/signin", login);
 app.post("/signup", createUser);
 
 // authorization
 app.use(auth);
+
+app.use("/", indexRouter); // application routes
 
 app.use((req, res) => {
   res
