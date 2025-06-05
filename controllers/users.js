@@ -39,7 +39,10 @@ const createUser = (req, res) => {
         avatar,
       })
     )
-    .then((user) => res.status(createdStatusCode).send(user))
+    .then((user) => {
+      const { password: _, ...userWithoutPassword } = user.toObject(); // destructuring with the rest operator
+      res.status(createdStatusCode).send(userWithoutPassword);
+    })
     .catch((err) => {
       console.error(err);
       if (err.name === "ValidationError") {
@@ -59,8 +62,8 @@ const createUser = (req, res) => {
 };
 
 const getCurrentUser = (req, res) => {
-  const { user_id } = req.user;
-  User.findById(user_id)
+  const userId = req.user._id;
+  User.findById(userId)
     .orFail()
     .then((user) => res.status(okStatusCode).send(user)) // returning user
     .catch((err) => {
@@ -81,7 +84,7 @@ const getCurrentUser = (req, res) => {
     });
 };
 
-module.exports.login = (req, res) => {
+const login = (req, res) => {
   const { email, password } = req.body;
   return User.findUserByCredentials(email, password)
     .then((user) => {
@@ -95,4 +98,4 @@ module.exports.login = (req, res) => {
     });
 };
 
-module.exports = { getUsers, getCurrentUser, createUser };
+module.exports = { getUsers, getCurrentUser, createUser, login };

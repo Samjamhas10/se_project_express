@@ -1,5 +1,5 @@
-const { JWT_SECRET } = require("../utils/config");
 const jwt = require("jsonwebtoken");
+const { JWT_SECRET } = require("../utils/config");
 const { unauthorizedStatusCode } = require("../utils/errors"); // import http 401 status code
 
 // exporting the middleware function
@@ -13,6 +13,7 @@ module.exports = (req, res, next) => {
   }
   const token = authorization.replace("Bearer ", "");
   let payload;
+
   try {
     // verify the token using some secret key
     payload = jwt.verify(token, JWT_SECRET);
@@ -22,6 +23,7 @@ module.exports = (req, res, next) => {
       .status(unauthorizedStatusCode)
       .send({ message: "Authorization Required" });
   }
-  req.user._id = payload; // assigning the payload to the request object
-  next(); // sending the request to the next middleware
+
+  req.user = payload; // assigning the payload to the request object
+  return next(); // sending the request to the next middleware
 };
