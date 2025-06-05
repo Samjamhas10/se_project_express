@@ -2,7 +2,7 @@ const express = require("express"); // import Express library used to build our 
 const mongoose = require("mongoose");
 const indexRouter = require("./routes/index");
 const { notFoundStatusCode } = require("./utils/errors");
-// const { login, createUser } = require("../controllers/users");
+const { login, createUser } = require("../controllers/users");
 
 const app = express(); // create an instance of an Express application
 const { PORT = 3001 } = process.env; // get port number or use 3001 as default
