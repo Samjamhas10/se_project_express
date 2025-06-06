@@ -49,24 +49,22 @@ const deleteItem = (req, res) => {
   const { itemId } = req.params; // identifying which item to delete
   const userId = req.user._id;
   // find item by id
-  Item.findById(itemId).then((item) => {
-    if (!item) {
-      return res.status(forbiddenStatusCode).send({ message: "Forbidden" });
-    }
-    // check if current user is the owner
-    if (item.owner.toString() !== userId.toString()) {
-      return res.status(forbiddenStatusCode).send({ message: "Access denied" });
-    }
-    
-  });
-  return Item.findByIdAndDelete(itemId)
-    .then((deletedItem) => {
-      if (!deletedItem) {
+  Item.findById(itemId)
+    .then((item) => {
+      if (!item) {
         return res
           .status(notFoundStatusCode)
           .send({ message: "Requested resource not found" });
       }
-      return res.status(okStatusCode).send(deletedItem);
+      // check if current user is the owner
+      if (item.owner.toString() !== userId.toString()) {
+        return res
+          .status(forbiddenStatusCode)
+          .send({ message: "Access denied" });
+      }
+      return Item.findByIdAndDelete(itemId).then((deletedItem) => {
+        return res.status(okStatusCode).send(deletedItem);
+      });
     })
     .catch((err) => {
       // if an error occurs
