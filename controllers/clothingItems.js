@@ -1,5 +1,5 @@
 const Item = require("../models/clothingItem");
-const user = require("../models/user");
+// const user = require("../models/user");
 const {
   badRequestStatusCode,
   internalServerStatusCode,

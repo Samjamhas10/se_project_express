@@ -1,5 +1,6 @@
 const express = require("express"); // import Express library used to build our web server
 const mongoose = require("mongoose");
+const cors = require("cors");
 const indexRouter = require("./routes/index");
 const { notFoundStatusCode } = require("./utils/errors");
 const { login, createUser } = require("./controllers/users");
@@ -17,6 +18,9 @@ mongoose
   .catch(console.error);
 
 app.use(express.json()); // parse JSON request bodies
+
+// allow requests from the client to the server to be processed
+app.use(cors());
 
 app.post("/signin", login);
 app.post("/signup", createUser);
