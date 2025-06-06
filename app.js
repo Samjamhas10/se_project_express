@@ -4,7 +4,7 @@ const cors = require("cors");
 const indexRouter = require("./routes/index");
 const { notFoundStatusCode } = require("./utils/errors");
 const { login, createUser } = require("./controllers/users");
-const auth = require("./middleware/auth");
+const auth = require("./middlewares/auth");
 
 const app = express(); // create an instance of an Express application
 const { PORT = 3001 } = process.env; // get port number or use 3001 as default
@@ -31,7 +31,7 @@ app.use(auth);
 app.use("/", indexRouter); // application routes
 
 app.use((req, res) => {
-  req
+  res
     .status(notFoundStatusCode)
     .send({ message: "Requested resource not found" }); // 404 catch-all
 });
