@@ -13,7 +13,6 @@ const {
 } = require("../utils/errors");
 
 const { JWT_SECRET } = require("../utils/config");
-// const user = require("../models/user");
 
 const getUsers = (req, res) => {
   User.find({})
@@ -95,9 +94,9 @@ const login = (req, res) => {
       const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
         expiresIn: "7d",
       });
-      res.send({ token });
+      return res.status(okStatusCode).send({ token });
     })
-    .catch((err) => {
+    .catch(() => {
       res
         .status(unauthorizedStatusCode)
         .send({ message: "Authorization required" });

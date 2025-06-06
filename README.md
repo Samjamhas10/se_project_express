@@ -1,4 +1,4 @@
-# WTWR (What to Wear?): Back End Project 12
+# WTWR (What to Wear?): Back End Project 13
 
 The back-end project is focused on creating a server for the WTWR application. This application is a weather-based clothing recommendation app. The main focus is to build a RESTful API, where users can get, add, delete, update clothing items.
 

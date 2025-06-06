@@ -31,7 +31,7 @@ app.use(auth);
 app.use("/", indexRouter); // application routes
 
 app.use((req, res) => {
-  res
+  req
     .status(notFoundStatusCode)
     .send({ message: "Requested resource not found" }); // 404 catch-all
 });

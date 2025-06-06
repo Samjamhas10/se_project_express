@@ -1,5 +1,5 @@
 const Item = require("../models/clothingItem");
-// const user = require("../models/user");
+
 const {
   badRequestStatusCode,
   internalServerStatusCode,
@@ -62,9 +62,9 @@ const deleteItem = (req, res) => {
           .status(forbiddenStatusCode)
           .send({ message: "Access denied" });
       }
-      return Item.findByIdAndDelete(itemId).then((deletedItem) => {
-        return res.status(okStatusCode).send(deletedItem);
-      });
+      return Item.findByIdAndDelete(itemId).then((deletedItem) =>
+        res.status(okStatusCode).send(deletedItem)
+      );
     })
     .catch((err) => {
       // if an error occurs
