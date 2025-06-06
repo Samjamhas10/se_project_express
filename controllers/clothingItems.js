@@ -1,10 +1,12 @@
 const Item = require("../models/clothingItem");
+const user = require("../models/user");
 const {
   badRequestStatusCode,
   internalServerStatusCode,
   okStatusCode,
   createdStatusCode,
   notFoundStatusCode,
+  forbiddenStatusCode,
 } = require("../utils/errors");
 
 const getItems = (req, res) => {
@@ -45,14 +47,26 @@ const createItem = (req, res) => {
 
 const deleteItem = (req, res) => {
   const { itemId } = req.params; // identifying which item to delete
-  Item.findByIdAndDelete(itemId)
-    .then((item) => {
-      if (!item) {
+  const userId = req.user._id;
+  // find item by id
+  Item.findById(itemId).then((item) => {
+    if (!item) {
+      return res.status(forbiddenStatusCode).send({ message: "Forbidden" });
+    }
+    // check if current user is the owner
+    if (item.owner.toString() !== userId.toString()) {
+      return res.status(forbiddenStatusCode).send({ message: "Access denied" });
+    }
+    
+  });
+  return Item.findByIdAndDelete(itemId)
+    .then((deletedItem) => {
+      if (!deletedItem) {
         return res
           .status(notFoundStatusCode)
           .send({ message: "Requested resource not found" });
       }
-      return res.status(okStatusCode).send(item);
+      return res.status(okStatusCode).send(deletedItem);
     })
     .catch((err) => {
       // if an error occurs

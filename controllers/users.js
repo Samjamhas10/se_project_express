@@ -13,7 +13,7 @@ const {
 } = require("../utils/errors");
 
 const { JWT_SECRET } = require("../utils/config");
-const user = require("../models/user");
+// const user = require("../models/user");
 
 const getUsers = (req, res) => {
   User.find({})
@@ -94,8 +94,10 @@ const login = (req, res) => {
       });
       res.send({ token });
     })
-    .catch((err) => {
-      res.status(badRequestStatusCode).send({ message: "Invalid data" });
+    .catch(() => {
+      res
+        .status(unauthorizedStatusCode)
+        .send({ message: "Authorization required" });
     });
 };
 
@@ -117,7 +119,14 @@ const updateProfile = (req, res) => {
       res.send(user);
     })
     .catch((err) => {
-      return res.status(badRequestStatusCode).send({ message: "Invalid data" });
+      if (err.name === "ValidationError") {
+        return res
+          .status(badRequestStatusCode)
+          .send({ message: "Invalid data" });
+      }
+      return res
+        .status(internalServerStatusCode)
+        .send({ message: "An error has occurred on the server" });
     });
 };
 
