@@ -87,6 +87,9 @@ const getCurrentUser = (req, res) => {
 
 const login = (req, res) => {
   const { email, password } = req.body;
+  if (!email || !password) {
+    return res.status(badRequestStatusCode).send({ message: "Invalid data" });
+  }
   return User.findUserByCredentials(email, password)
     .then((user) => {
       const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
@@ -94,7 +97,7 @@ const login = (req, res) => {
       });
       res.send({ token });
     })
-    .catch(() => {
+    .catch((err) => {
       res
         .status(unauthorizedStatusCode)
         .send({ message: "Authorization required" });
@@ -116,7 +119,7 @@ const updateProfile = (req, res) => {
           .status(notFoundStatusCode)
           .send({ message: "Requested resource not found" });
       }
-      res.send(user);
+      return res.send(user);
     })
     .catch((err) => {
       if (err.name === "ValidationError") {
