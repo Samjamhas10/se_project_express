@@ -118,7 +118,7 @@ const updateProfile = (req, res) => {
           .status(notFoundStatusCode)
           .send({ message: "Requested resource not found" });
       }
-      return res.send(user);
+      return res.status(okStatusCode).send(user);
     })
     .catch((err) => {
       if (err.name === "ValidationError") {
