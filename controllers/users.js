@@ -14,19 +14,6 @@ const {
 
 const { JWT_SECRET } = require("../utils/config");
 
-const getUsers = (req, res) => {
-  User.find({})
-    .then((users) => {
-      res.status(okStatusCode).send(users);
-    })
-    .catch((err) => {
-      console.error(err);
-      return res
-        .status(internalServerStatusCode)
-        .send({ message: "An error has occurred on the server" }); // have something similiar to this in all your catch blocks'
-    });
-};
-
 const createUser = (req, res) => {
   const { name, avatar, email, password } = req.body;
   bcrypt
@@ -96,10 +83,15 @@ const login = (req, res) => {
       });
       return res.status(okStatusCode).send({ token });
     })
-    .catch(() => {
+    .catch((err) => {
+      if (err.message === "Incorrect email or password") {
+        res
+          .status(unauthorizedStatusCode)
+          .send({ message: "Authorization required" });
+      }
       res
-        .status(unauthorizedStatusCode)
-        .send({ message: "Authorization required" });
+        .status(internalServerStatusCode)
+        .send({ message: "An error has occured on the server" });
     });
 };
 
@@ -132,4 +124,4 @@ const updateProfile = (req, res) => {
     });
 };
 
-module.exports = { getUsers, getCurrentUser, createUser, login, updateProfile };
+module.exports = { getCurrentUser, createUser, login, updateProfile };
