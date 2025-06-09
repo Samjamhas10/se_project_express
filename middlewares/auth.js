@@ -3,7 +3,7 @@ const { JWT_SECRET } = require("../utils/config");
 const { unauthorizedStatusCode } = require("../utils/errors"); // import http 401 status code
 
 // exporting the middleware function
-module.exports = (req, res, next) => {
+const auth = (req, res, next) => {
   const { authorization } = req.headers;
   // check if authorization header exists and starts with 'Bearer'
   if (!authorization || !authorization.startsWith("Bearer")) {
@@ -27,3 +27,5 @@ module.exports = (req, res, next) => {
   req.user = payload; // assigning the payload to the request object
   return next(); // sending the request to the next middleware
 };
+
+module.exports = auth;

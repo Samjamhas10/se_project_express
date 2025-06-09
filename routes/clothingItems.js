@@ -6,7 +6,7 @@ const {
   likeClothingItem,
   dislikeClothingItem,
 } = require("../controllers/clothingItems"); // import
-const auth = require("../middlewares/auth");
+const auth = require("../middlewares/auth"); 
 
 router.get("/", getItems); // GET all items // NOT protected
 
