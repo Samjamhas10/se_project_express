@@ -4,7 +4,6 @@ const cors = require("cors");
 const indexRouter = require("./routes/index");
 const { notFoundStatusCode } = require("./utils/errors");
 const { login, createUser } = require("./controllers/users");
-const auth = require("./middlewares/auth");
 
 const app = express(); // create an instance of an Express application
 const { PORT = 3001 } = process.env; // get port number or use 3001 as default
@@ -22,11 +21,8 @@ app.use(express.json()); // parse JSON request bodies
 // allow requests from the client to the server to be processed
 app.use(cors());
 
-app.post("/signin", login);
-app.post("/signup", createUser);
-
-// authorization
-app.use(auth);
+app.post("/signin", login); // NOT protected
+app.post("/signup", createUser); // NOT protected
 
 app.use("/", indexRouter); // application routes
 
