@@ -2,28 +2,74 @@
 
 The back-end project is focused on creating a server for the WTWR application. This application is a weather-based clothing recommendation app. The main focus is to build a RESTful API, where users can get, add, delete, update clothing items.
 
+- [Project Description](#project-description)
+- [Project Features](#project-features)
+- [Plan for Improving the Project](#plan-for-improving-the-project)
+- [Running the Project](#running-the-project)
+- [Deployment Instructions](#deployment-instructions)
+- [System Requirements](#system-requirements)
+- [Screenshots](#screenshots)
+- [Demo Video](demo-video)
+
 ## Project Description
 
 - Designing and building a RESTful API
-- Set up validation and Error handling
+- Set up validation and error handling
 - Work with NoSQL databases such as MongoDb
+- Secure password storing with hashing
+- User authentication using JWT
 
-The eventual goal is to create a server with an API and user authorization.
+<!-- The eventual goal is to create a server with an API and user authorization. -->
 
-## Technologies && Techniques
+## Project Features
 
 - Express.js - Web framework for building APIs
 - Node.js - Server-side Javascript
 - MongoDB - NoSQL database for data storage
 - Mongoose - MongoDB object modeling
 - ESLint - For code quality
+- JWT - (JSON Web Tokens) used for secure user authentication
 
-## Running the Project
+## Plan for improving the project
 
-`npm run start` — to launch the server
+- Fix basic error responses using custom error middleware to achieve more informative user feedback
+- Fix missing security headers using Helmet middlware vulnerabilities to achieve better protection against XSS
 
-`npm run dev` — to launch the server with the hot reload feature
+## Deployment Instructions
 
-### Testing
+To run the project locally:
 
-Before committing your code, make sure you edit the file `sprint.txt` in the root folder. The file `sprint.txt` should contain the number of the sprint you're currently working on. For ex. 12
+1. Clone the repository:
+
+   ```bash
+   git clone https://github.com/samjamhas10/se_project_express.git
+   ```
+
+2. Navigate to project directory:
+
+   `cd se_project_express`
+
+3. Install dependencies
+
+   `npm install`
+
+4. Launch the server
+
+   `npm run start`
+
+5. launch the server with the hot reload feature
+
+   `npm run dev`
+
+## System Requirements
+
+- Node.js: v23.11.0 or higher
+- npm: 10.9.2v or higher
+- MongoDB: v7.0.20 or higher
+- Operating system (Linux, macOS, Windows)
+
+## Screenshots
+
+
+
+## Demo Video

@@ -16,6 +16,7 @@ mongoose
   })
   .catch(console.error);
 
+// app.use(helmet()); // sets response headers automatically to help protect your app
 app.use(express.json()); // parse JSON request bodies
 
 // allow requests from the client to the server to be processed

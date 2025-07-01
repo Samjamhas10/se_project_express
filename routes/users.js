@@ -2,6 +2,8 @@ const router = require("express").Router(); // import router functionality from 
 const { getCurrentUser, updateProfile } = require("../controllers/users");
 const auth = require("../middlewares/auth");
 
+// all endpoints here start with /users
+
 // authorization
 router.use(auth);
 

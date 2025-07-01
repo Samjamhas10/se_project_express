@@ -6,7 +6,7 @@ const { unauthorizedStatusCode } = require("../utils/errors"); // import http 40
 const auth = (req, res, next) => {
   const { authorization } = req.headers;
   // check if authorization header exists and starts with 'Bearer'
-  if (!authorization || !authorization.startsWith("Bearer")) {
+  if (!authorization || !authorization.startsWith("Bearer ")) {
     return res
       .status(unauthorizedStatusCode)
       .send({ message: "Authorization Required" });
