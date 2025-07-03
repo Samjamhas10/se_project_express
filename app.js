@@ -2,7 +2,7 @@ const express = require("express"); // import Express library used to build our 
 const mongoose = require("mongoose");
 const cors = require("cors");
 const indexRouter = require("./routes/index");
-const { notFoundStatusCode } = require("./utils/errors");
+const { NotFoundError } = require("./utils/errors");
 const { login, createUser } = require("./controllers/users");
 const errorHandler = require("./middlewares/error-handler");
 
@@ -28,10 +28,8 @@ app.post("/signup", createUser); // NOT protected
 
 app.use("/", indexRouter); // application routes
 
-app.use((req, res) => {
-  res
-    .status(notFoundStatusCode)
-    .send({ message: "Requested resource not found" }); // 404 catch-all
+app.use((req, res, next) => {
+  next(new NotFoundError("Request resource not found"));
 });
 
 app.use(errorHandler);

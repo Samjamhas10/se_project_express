@@ -1,19 +1,19 @@
 const okStatusCode = 200;
 const createdStatusCode = 201;
-const badRequestStatusCode = 400;
+const badRequestError = 400;
 const unauthorizedStatusCode = 401;
-const forbiddenStatusCode = 403;
-const notFoundStatusCode = 404;
+const ForbiddenError = 403;
+const NotFoundError = 404;
 const conflictErrorStatusCode = 409;
 const internalServerStatusCode = 500;
 
 module.exports = {
   okStatusCode,
   createdStatusCode,
-  badRequestStatusCode,
+  badRequestError,
   unauthorizedStatusCode,
-  forbiddenStatusCode,
-  notFoundStatusCode,
+  ForbiddenError,
+  NotFoundError,
   conflictErrorStatusCode,
   internalServerStatusCode,
 };

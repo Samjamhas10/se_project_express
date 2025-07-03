@@ -9,6 +9,4 @@ const errorHandler = (err, req, res, next) => {
     .send({ message: "An error has occurred on the server" });
 };
 
-// next(new Error("Authorization error"));
-
 module.exports = errorHandler;

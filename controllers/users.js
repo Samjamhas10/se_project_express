@@ -2,19 +2,13 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken"); // Import jsonwebtoken module
 const User = require("../models/user"); // Import the User Mongoose Model
 
-const {
-  okStatusCode,
-  createdStatusCode,
-  badRequestStatusCode,
-  unauthorizedStatusCode,
-  notFoundStatusCode,
-  conflictErrorStatusCode,
-  internalServerStatusCode,
-} = require("../utils/errors");
+const { BadRequestError, NotFoundError } = require("../utils/errors");
+
+const { okStatusCode, createdStatusCode } = require("../utils/errors");
 
 const { JWT_SECRET } = require("../utils/config");
 
-const createUser = (req, res) => {
+const createUser = (req, res, next) => {
   const { name, avatar, email, password } = req.body;
   bcrypt
     .hash(password, 10)
@@ -30,51 +24,21 @@ const createUser = (req, res) => {
       const { password: _, ...userWithoutPassword } = user.toObject(); // destructuring with the rest operator
       res.status(createdStatusCode).send(userWithoutPassword);
     })
-    .catch((err) => {
-      console.error(err);
-      if (err.name === "ValidationError") {
-        return res
-          .status(badRequestStatusCode)
-          .send({ message: "Invalid data" });
-      }
-      if (err.code === 11000) {
-        return res
-          .status(conflictErrorStatusCode)
-          .send({ message: "Email already exists" });
-      }
-      return res
-        .status(internalServerStatusCode)
-        .send({ message: "An error has occurred on the server" });
-    });
+    .catch(next);
 };
 
-const getCurrentUser = (req, res) => {
+const getCurrentUser = (req, res, next) => {
   const userId = req.user._id;
   User.findById(userId)
     .orFail()
     .then((user) => res.status(okStatusCode).send(user)) // returning user
-    .catch((err) => {
-      console.error(err);
-      if (err.name === "DocumentNotFoundError") {
-        return res
-          .status(notFoundStatusCode)
-          .send({ message: "Requested resource not found" });
-      }
-      if (err.name === "CastError") {
-        return res
-          .status(badRequestStatusCode)
-          .send({ message: "Invalid data" });
-      }
-      return res
-        .status(internalServerStatusCode)
-        .send({ message: "An error has occurred on the server" });
-    });
+    .catch(next);
 };
 
-const login = (req, res) => {
+const login = (req, res, next) => {
   const { email, password } = req.body;
   if (!email || !password) {
-    return res.status(badRequestStatusCode).send({ message: "Invalid data" });
+    return next(new BadRequestError("Invalid data"));
   }
   return User.findUserByCredentials(email, password)
     .then((user) => {
@@ -83,20 +47,11 @@ const login = (req, res) => {
       });
       return res.status(okStatusCode).send({ token });
     })
-    .catch((err) => {
-      if (err.message === "Incorrect email or password") {
-        return res
-          .status(unauthorizedStatusCode)
-          .send({ message: "Authorization required" });
-      }
-      return res
-        .status(internalServerStatusCode)
-        .send({ message: "An error has occured on the server" });
-    });
+    .catch(next);
 };
 
 // allows users to update their own profile information
-const updateProfile = (req, res) => {
+const updateProfile = (req, res, next) => {
   const userId = req.user._id;
   const { name, avatar } = req.body;
   return User.findByIdAndUpdate(
@@ -106,22 +61,11 @@ const updateProfile = (req, res) => {
   )
     .then((user) => {
       if (!user) {
-        return res
-          .status(notFoundStatusCode)
-          .send({ message: "Requested resource not found" });
+        return next(new NotFoundError("Requested resource not found"));
       }
       return res.status(okStatusCode).send(user);
     })
-    .catch((err) => {
-      if (err.name === "ValidationError") {
-        return res
-          .status(badRequestStatusCode)
-          .send({ message: "Invalid data" });
-      }
-      return res
-        .status(internalServerStatusCode)
-        .send({ message: "An error has occurred on the server" });
-    });
+    .catch(next);
 };
 
 module.exports = { getCurrentUser, createUser, login, updateProfile };

@@ -1,28 +1,18 @@
 const Item = require("../models/clothingItem");
 
-const {
-  badRequestStatusCode,
-  internalServerStatusCode,
-  okStatusCode,
-  createdStatusCode,
-  notFoundStatusCode,
-  forbiddenStatusCode,
-} = require("../utils/errors");
+const { NotFoundError, ForbiddenError } = require("../utils/errors");
 
-const getItems = (req, res) => {
+const { okStatusCode, createdStatusCode } = require("../utils/errors");
+
+const getItems = (req, res, next) => {
   Item.find({})
     .then((items) => {
       res.status(okStatusCode).send(items);
     })
-    .catch((err) => {
-      console.error(err);
-      return res
-        .status(internalServerStatusCode)
-        .send({ message: "An error has occurred on the server" });
-    });
+    .catch(next);
 };
 
-const createItem = (req, res) => {
+const createItem = (req, res, next) => {
   const { name, weather, imageUrl } = req.body;
   Item.create({
     name,
@@ -32,55 +22,30 @@ const createItem = (req, res) => {
     owner: req.user._id,
   })
     .then((item) => res.status(createdStatusCode).send(item))
-    .catch((err) => {
-      console.error(err);
-      if (err.name === "ValidationError") {
-        return res
-          .status(badRequestStatusCode)
-          .send({ message: "Invalid data" });
-      }
-      return res
-        .status(internalServerStatusCode)
-        .send({ message: "An error has occurred on the server" });
-    });
+    .catch(next);
 };
 
-const deleteItem = (req, res) => {
+const deleteItem = (req, res, next) => {
   const { itemId } = req.params; // identifying which item to delete
   const userId = req.user._id;
   // find item by id
   Item.findById(itemId)
     .then((item) => {
       if (!item) {
-        return res
-          .status(notFoundStatusCode)
-          .send({ message: "Requested resource not found" });
+        return next(new NotFoundError("Requested resource not found"));
       }
       // check if current user is the owner
       if (item.owner.toString() !== userId.toString()) {
-        return res
-          .status(forbiddenStatusCode)
-          .send({ message: "Access denied" });
+        return next(new ForbiddenError("Access denied"));
       }
       return Item.findByIdAndDelete(itemId).then((deletedItem) =>
         res.status(okStatusCode).send(deletedItem)
       );
     })
-    .catch((err) => {
-      // if an error occurs
-      console.error(err);
-      if (err.name === "CastError") {
-        return res
-          .status(badRequestStatusCode)
-          .send({ message: "Invalid data" });
-      }
-      return res
-        .status(internalServerStatusCode)
-        .send({ message: "An error has occurred on the server" });
-    });
+    .catch(next);
 };
 
-const updateItem = (req, res, method) => {
+const updateItem = (req, res, method, next) => {
   const { itemId } = req.params;
 
   Item.findByIdAndUpdate(
@@ -91,28 +56,16 @@ const updateItem = (req, res, method) => {
   )
     .orFail()
     .then((item) => res.status(okStatusCode).send(item))
-    .catch((err) => {
-      if (err.name === "DocumentNotFoundError") {
-        return res
-          .status(notFoundStatusCode)
-          .send({ message: "Requested resource not found" });
-      }
-      if (err.name === "CastError") {
-        return res
-          .status(badRequestStatusCode)
-          .send({ message: "Invalid data" });
-      }
-      return res
-        .status(internalServerStatusCode)
-        .send({ message: "An error has occurred on the server" });
-    });
+    .catch(next);
 };
 
 // PUT /items/:id/likes
-const likeClothingItem = (req, res) => updateItem(req, res, "$addToSet");
+const likeClothingItem = (req, res, next) =>
+  updateItem(req, res, "$addToSet", next);
 
 // DELETE /items/:id/likes
-const dislikeClothingItem = (req, res) => updateItem(req, res, "$pull");
+const dislikeClothingItem = (req, res, next) =>
+  updateItem(req, res, "$pull", next);
 
 module.exports = {
   getItems,
