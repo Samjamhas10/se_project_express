@@ -2,9 +2,14 @@ const express = require("express"); // import Express library used to build our 
 const mongoose = require("mongoose");
 const cors = require("cors");
 const indexRouter = require("./routes/index");
+const {
+  validateUserBody,
+  validateAuthentication,
+} = require("./middlewares/validation.js");
 const { NotFoundError } = require("./utils/errors");
 const { login, createUser } = require("./controllers/users");
 const errorHandler = require("./middlewares/error-handler");
+const { errors } = require("celebrate");
 
 const app = express(); // create an instance of an Express application
 const { PORT = 3001 } = process.env; // get port number or use 3001 as default
@@ -23,8 +28,8 @@ app.use(express.json()); // parse JSON request bodies
 // allow requests from the client to the server to be processed
 app.use(cors());
 
-app.post("/signin", login); // NOT protected
-app.post("/signup", createUser); // NOT protected
+app.post("/signin", validateAuthentication, login); // NOT protected
+app.post("/signup", validateUserBody, createUser); // NOT protected
 
 app.use("/", indexRouter); // application routes
 
@@ -32,6 +37,10 @@ app.use((req, res, next) => {
   next(new NotFoundError("Request resource not found"));
 });
 
+// celebrate error handler
+app.use(errors());
+
+// centralized handler
 app.use(errorHandler);
 
 app.listen(PORT, () => {
