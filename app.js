@@ -4,6 +4,7 @@ const cors = require("cors");
 const indexRouter = require("./routes/index");
 const { notFoundStatusCode } = require("./utils/errors");
 const { login, createUser } = require("./controllers/users");
+const errorHandler = require("./middlewares/error-handler");
 
 const app = express(); // create an instance of an Express application
 const { PORT = 3001 } = process.env; // get port number or use 3001 as default
@@ -32,6 +33,8 @@ app.use((req, res) => {
     .status(notFoundStatusCode)
     .send({ message: "Requested resource not found" }); // 404 catch-all
 });
+
+app.use(errorHandler);
 
 app.listen(PORT, () => {
   // start the server
