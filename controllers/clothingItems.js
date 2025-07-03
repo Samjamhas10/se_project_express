@@ -1,8 +1,6 @@
 const Item = require("../models/clothingItem");
-
 const { NotFoundError, ForbiddenError } = require("../utils/errors");
-
-const { okStatusCode, createdStatusCode } = require("../utils/errors");
+const { okStatusCode, createdStatusCode } = require("../utils/statusCodes");
 
 const getItems = (req, res, next) => {
   Item.find({})
@@ -54,7 +52,7 @@ const updateItem = (req, res, method, next) => {
     { [method]: { likes: req.user._id } },
     { new: true }
   )
-    .orFail()
+    .orFail(new NotFoundError("Requested resource not found"))
     .then((item) => res.status(okStatusCode).send(item))
     .catch(next);
 };

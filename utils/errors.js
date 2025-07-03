@@ -1,19 +1,13 @@
-const okStatusCode = 200;
-const createdStatusCode = 201;
-const badRequestError = 400;
-const unauthorizedStatusCode = 401;
-const ForbiddenError = 403;
-const NotFoundError = 404;
-const conflictErrorStatusCode = 409;
-const internalServerStatusCode = 500;
+const NotFoundError = require("./not-found-err");
+const BadRequestError = require("./bad-request-err");
+const ForbiddenError = require("./forbidden-err");
+const UnauthorizedError = require("./unauthorized-err");
+const ConflictError = require("./conflict-err");
 
 module.exports = {
-  okStatusCode,
-  createdStatusCode,
-  badRequestError,
-  unauthorizedStatusCode,
-  ForbiddenError,
   NotFoundError,
-  conflictErrorStatusCode,
-  internalServerStatusCode,
+  BadRequestError,
+  ForbiddenError,
+  UnauthorizedError,
+  ConflictError,
 };

@@ -1,11 +1,8 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken"); // Import jsonwebtoken module
 const User = require("../models/user"); // Import the User Mongoose Model
-
-const { BadRequestError, NotFoundError } = require("../utils/errors");
-
-const { okStatusCode, createdStatusCode } = require("../utils/errors");
-
+const { NotFoundError, BadRequestError } = require("../utils/errors");
+const { okStatusCode, createdStatusCode } = require("../utils/statusCodes");
 const { JWT_SECRET } = require("../utils/config");
 
 const createUser = (req, res, next) => {
@@ -21,6 +18,7 @@ const createUser = (req, res, next) => {
       })
     )
     .then((user) => {
+      // eslint-disable-next-line no-unused-vars
       const { password: _, ...userWithoutPassword } = user.toObject(); // destructuring with the rest operator
       res.status(createdStatusCode).send(userWithoutPassword);
     })
@@ -30,9 +28,15 @@ const createUser = (req, res, next) => {
 const getCurrentUser = (req, res, next) => {
   const userId = req.user._id;
   User.findById(userId)
-    .orFail()
+    .orFail(new NotFoundError("Requested resource not found"))
     .then((user) => res.status(okStatusCode).send(user)) // returning user
-    .catch(next);
+    .catch((err) => {
+      if (err.name === "CastError") {
+        next(new BadRequestError("Invalid data"));
+      } else {
+        next(err);
+      }
+    });
 };
 
 const login = (req, res, next) => {
@@ -65,7 +69,13 @@ const updateProfile = (req, res, next) => {
       }
       return res.status(okStatusCode).send(user);
     })
-    .catch(next);
+    .catch((err) => {
+      if (err.name === "CastError") {
+        next(new BadRequestError("Invalid data"));
+      } else {
+        next(err);
+      }
+    });
 };
 
 module.exports = { getCurrentUser, createUser, login, updateProfile };
