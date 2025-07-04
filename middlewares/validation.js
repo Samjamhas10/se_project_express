@@ -59,7 +59,7 @@ const validateUserBody = celebrate({
   }),
 });
 
-//
+
 const validateUserBodyEditProfile = celebrate({
   body: Joi.object().keys({
     name: Joi.string().min(2).max(30).messages({

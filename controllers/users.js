@@ -1,8 +1,17 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken"); // Import jsonwebtoken module
 const User = require("../models/user"); // Import the User Mongoose Model
-const { NotFoundError, BadRequestError } = require("../utils/errors");
-const { okStatusCode, createdStatusCode } = require("../utils/statusCodes");
+const {
+  NotFoundError,
+  BadRequestError,
+  ConflictError,
+  UnauthorizedError,
+} = require("../utils/errors");
+const {
+  okStatusCode,
+  createdStatusCode,
+  internalServerStatusCode,
+} = require("../utils/statusCodes");
 const { JWT_SECRET } = require("../utils/config");
 
 const createUser = (req, res, next) => {
@@ -22,7 +31,14 @@ const createUser = (req, res, next) => {
       const { password: _, ...userWithoutPassword } = user.toObject(); // destructuring with the rest operator
       res.status(createdStatusCode).send(userWithoutPassword);
     })
-    .catch(next);
+    .catch((err) => {
+      if (err.code === 11000) {
+        return next(
+          new ConflictError("An account with this email already exists")
+        );
+      }
+      return next();
+    });
 };
 
 const getCurrentUser = (req, res, next) => {
@@ -51,7 +67,13 @@ const login = (req, res, next) => {
       });
       return res.status(okStatusCode).send({ token });
     })
-    .catch(next);
+    .catch((err) => {
+      if (err.message === "Incorrect email or password") {
+        return next(new UnauthorizedError("Incorrect email or password"));
+      }
+      // Handle other errors
+      next(err);
+    });
 };
 
 // allows users to update their own profile information
