@@ -64,10 +64,11 @@ const login = (req, res, next) => {
       return res.status(okStatusCode).send({ token });
     })
     .catch((err) => {
-      return next(new UnauthorizedError("Incorrect email or password"));
-
+      if (err.message === "Incorrect email or password") {
+        return next(new UnauthorizedError("Incorrect email or password"));
+      }
       // Handle other errors
-      next(err);
+      return next(err);
     });
 };
 
