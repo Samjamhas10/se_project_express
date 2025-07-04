@@ -5,7 +5,7 @@ const indexRouter = require("./routes/index");
 const {
   validateUserBody,
   validateAuthentication,
-} = require("./middlewares/validation.js");
+} = require("./middlewares/validation");
 const { NotFoundError } = require("./utils/errors");
 const { login, createUser } = require("./controllers/users");
 const errorHandler = require("./middlewares/error-handler");
@@ -23,6 +23,7 @@ mongoose
   .catch(console.error);
 
 // app.use(helmet()); // sets response headers automatically to help protect your app
+
 app.use(express.json()); // parse JSON request bodies
 
 // allow requests from the client to the server to be processed

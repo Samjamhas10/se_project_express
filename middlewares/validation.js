@@ -15,7 +15,7 @@ const validateEmail = (value, helpers) => {
   return helpers.error("string.email");
 };
 
-module.exports.validateCardBody = celebrate({
+const validateCardBody = celebrate({
   body: Joi.object().keys({
     name: Joi.string().required().min(2).max(30).messages({
       "string.min": 'The minimum length of the "name" field is 2',
@@ -34,7 +34,7 @@ module.exports.validateCardBody = celebrate({
   }),
 });
 
-module.exports.validateUserBody = celebrate({
+const validateUserBody = celebrate({
   body: Joi.object().keys({
     name: Joi.string().required().min(2).max(30).messages({
       "string.min": "The name must be at least 2 characters",
@@ -54,7 +54,15 @@ module.exports.validateUserBody = celebrate({
   }),
 });
 
-module.exports.validateAuthentication = celebrate({
+const validateUserBodyEditProfile = celebrate({
+  body: Joi.object().keys({
+    name: Joi.string().min(2).max(30).messages({
+      "string.min": "The name must be at least 2 characters",
+    }),
+  }),
+});
+
+const validateAuthentication = celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().custom(validateEmail).messages({
       "string.empty": 'The "email" field must be filled in',
@@ -66,9 +74,16 @@ module.exports.validateAuthentication = celebrate({
   }),
 });
 
-module.exports.validateId = celebrate({
+const validateId = celebrate({
   params: Joi.object().keys({
     itemId: Joi.string().hex().length(24).required(),
   }),
 });
 
+module.exports = {
+  validateUserBody,
+  validateUserBodyEditProfile,
+  validateCardBody,
+  validateAuthentication,
+  validateId,
+};
