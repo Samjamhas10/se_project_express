@@ -1,6 +1,7 @@
 const express = require("express"); // import Express library used to build our web server
 const mongoose = require("mongoose");
 const cors = require("cors");
+const { errors } = require("celebrate");
 const indexRouter = require("./routes/index");
 const {
   validateUserBody,
@@ -9,8 +10,8 @@ const {
 const { NotFoundError } = require("./utils/errors");
 const { login, createUser } = require("./controllers/users");
 const errorHandler = require("./middlewares/error-handler");
-const { errors } = require("celebrate");
-const { requestLogger, errorLogger } = require("./middlewares/logger.js");
+
+const { requestLogger, errorLogger } = require("./middlewares/logger");
 
 const app = express(); // create an instance of an Express application
 const { PORT = 3001 } = process.env; // get port number or use 3001 as default

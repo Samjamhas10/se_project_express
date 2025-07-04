@@ -7,11 +7,7 @@ const {
   ConflictError,
   UnauthorizedError,
 } = require("../utils/errors");
-const {
-  okStatusCode,
-  createdStatusCode,
-  internalServerStatusCode,
-} = require("../utils/statusCodes");
+const { okStatusCode, createdStatusCode } = require("../utils/statusCodes");
 const { JWT_SECRET } = require("../utils/config");
 
 const createUser = (req, res, next) => {
@@ -68,9 +64,8 @@ const login = (req, res, next) => {
       return res.status(okStatusCode).send({ token });
     })
     .catch((err) => {
-      if (err.message === "Incorrect email or password") {
-        return next(new UnauthorizedError("Incorrect email or password"));
-      }
+      return next(new UnauthorizedError("Incorrect email or password"));
+
       // Handle other errors
       next(err);
     });
