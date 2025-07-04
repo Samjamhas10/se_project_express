@@ -10,6 +10,7 @@ const { NotFoundError } = require("./utils/errors");
 const { login, createUser } = require("./controllers/users");
 const errorHandler = require("./middlewares/error-handler");
 const { errors } = require("celebrate");
+const { requestLogger, errorLogger } = require("./middlewares/logger.js");
 
 const app = express(); // create an instance of an Express application
 const { PORT = 3001 } = process.env; // get port number or use 3001 as default
@@ -29,6 +30,9 @@ app.use(express.json()); // parse JSON request bodies
 // allow requests from the client to the server to be processed
 app.use(cors());
 
+// enable the request logger before all route handlers
+app.use(requestLogger);
+
 app.post("/signin", validateAuthentication, login); // NOT protected
 app.post("/signup", validateUserBody, createUser); // NOT protected
 
@@ -37,6 +41,9 @@ app.use("/", indexRouter); // application routes
 app.use((req, res, next) => {
   next(new NotFoundError("Request resource not found"));
 });
+
+// enable the error logger after the route handlers and before the error handlers
+app.use(errorLogger);
 
 // celebrate error handler
 app.use(errors());
