@@ -1,6 +1,7 @@
 const express = require("express"); // import Express library used to build our web server
 const mongoose = require("mongoose");
 const cors = require("cors");
+require("dotenv").config();
 const { errors } = require("celebrate");
 const indexRouter = require("./routes/index");
 const {
