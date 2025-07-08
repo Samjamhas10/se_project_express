@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 const { JWT_SECRET } = require("../utils/config");
-const { unauthorizedStatusCode } = require("../utils/errors"); // import http 401 status code
+const { unauthorizedError } = require("../utils/errors"); // import http 401 status code
 
 // exporting the middleware function
 const auth = (req, res, next) => {
@@ -8,7 +8,7 @@ const auth = (req, res, next) => {
   // check if authorization header exists and starts with 'Bearer'
   if (!authorization || !authorization.startsWith("Bearer ")) {
     return res
-      .status(unauthorizedStatusCode)
+      .status(unauthorizedError)
       .send({ message: "Authorization Required" });
   }
   const token = authorization.replace("Bearer ", "");
@@ -20,7 +20,7 @@ const auth = (req, res, next) => {
   } catch (err) {
     // if verification fails, respond with 401
     return res
-      .status(unauthorizedStatusCode)
+      .status(unauthorizedError)
       .send({ message: "Authorization Required" });
   }
 
