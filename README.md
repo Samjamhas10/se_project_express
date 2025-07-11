@@ -9,7 +9,8 @@ The back-end project is focused on creating a server for the WTWR application. T
 - [Deployment Instructions](#deployment-instructions)
 - [System Requirements](#system-requirements)
 - [Screenshots](#screenshots)
-- [Demo Video](demo-video)
+- [Demo Video](#demo-video)
+- [Domain Name](#domain-name)
 
 ## Project Description
 
