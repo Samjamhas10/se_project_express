@@ -74,4 +74,5 @@ To run the project locally:
 
 ## Domain Name
 
-- https://api.wtwr-app.jumpingcrab.com
+- Frontend + Backend: https://wtwr-app.jumpingcrab.com/
+- API Base URL: https://api.wtwr-app.jumpingcrab.com
