@@ -20,7 +20,12 @@ const createItem = (req, res, next) => {
     owner: req.user._id,
   })
     .then((item) => res.status(createdStatusCode).send(item))
-    .catch(next);
+    .catch((err) => {
+      if (err.name === "ValidationError") {
+        return next(new BadRequestError("Invalid Data"));
+      }
+      return next(err);
+    });
 };
 
 const deleteItem = (req, res, next) => {
@@ -40,7 +45,12 @@ const deleteItem = (req, res, next) => {
         res.status(okStatusCode).send(deletedItem)
       );
     })
-    .catch(next);
+    .catch((err) => {
+      if (err.name === "ValidationError") {
+        return next(new BadRequestError("Invalid data"));
+      }
+      return next(err);
+    });
 };
 
 const updateItem = (req, res, method, next) => {

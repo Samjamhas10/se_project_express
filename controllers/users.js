@@ -28,12 +28,15 @@ const createUser = (req, res, next) => {
       res.status(createdStatusCode).send(userWithoutPassword);
     })
     .catch((err) => {
+      if (err.name === "ValidationError") {
+        return next(new BadRequestError("Invalid Data"));
+      }
       if (err.code === 11000) {
         return next(
           new ConflictError("An account with this email already exists")
         );
       }
-      return next();
+      return next(err);
     });
 };
 
@@ -44,10 +47,9 @@ const getCurrentUser = (req, res, next) => {
     .then((user) => res.status(okStatusCode).send(user)) // returning user
     .catch((err) => {
       if (err.name === "CastError") {
-        next(new BadRequestError("Invalid data"));
-      } else {
-        next(err);
+        return next(new BadRequestError("Invalid user ID"));
       }
+      return next(err);
     });
 };
 
@@ -88,11 +90,15 @@ const updateProfile = (req, res, next) => {
       return res.status(okStatusCode).send(user);
     })
     .catch((err) => {
-      if (err.name === "CastError") {
-        next(new BadRequestError("Invalid data"));
-      } else {
-        next(err);
+      if (err.name === "ValidationError") {
+        return next(new BadRequestError("Invalid Data"));
       }
+      if (err.code === 11000) {
+        return next(
+          new ConflictError("An account with this email already exists")
+        );
+      }
+      return next(err);
     });
 };
 
