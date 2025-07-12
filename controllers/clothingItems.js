@@ -1,5 +1,9 @@
 const Item = require("../models/clothingItem");
-const { NotFoundError, ForbiddenError } = require("../utils/errors");
+const {
+  NotFoundError,
+  ForbiddenError,
+  BadRequestError,
+} = require("../utils/errors");
 const { okStatusCode, createdStatusCode } = require("../utils/statusCodes");
 
 const getItems = (req, res, next) => {
