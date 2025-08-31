@@ -35,12 +35,12 @@ app.use(cors());
 // enable the request logger before all route handlers
 app.use(requestLogger);
 
-// set up server crash testing, remove after passing review
-app.get("/crash-test", () => {
-  setTimeout(() => {
-    throw new Error("Server will crash now");
-  }, 0);
-});
+// // set up server crash testing, remove after passing review
+// app.get("/crash-test", () => {
+//   setTimeout(() => {
+//     throw new Error("Server will crash now");
+//   }, 0);
+// });
 
 app.post("/signin", validateAuthentication, login); // NOT protected
 app.post("/signup", validateUserBody, createUser); // NOT protected
@@ -57,7 +57,7 @@ app.use(errorLogger);
 // celebrate error handler
 app.use(errors());
 
-// centralized handler
+// centralized handle
 app.use(errorHandler);
 
 app.listen(PORT, () => {

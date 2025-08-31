@@ -71,6 +71,14 @@ To run the project locally:
 
 ## Screenshots
 
+## Postman 
+
+![Postman Screenshot](postman.png)
+
+## MongoDB 
+
+![MongoDB screenshot](mongodb.png)
+
 ## Demo Video
 
 ## Domain Name
